@@ -77,7 +77,13 @@ function drawGraph(graph) {
     nodeContainer.addChild(circle);
 
     circle.interactive = true;
-    circle.buttonMode = true;
+    circle.hitArea = new PIXI.Circle(0, 0, 15);
+    circle.on('pointerover', () => {
+    container.style.cursor = 'pointer';
+  });
+    circle.on('pointerout', () => {
+    container.style.cursor = 'default';
+  });
     circle.on('pointerdown', () => {
       if (!selectedColor) {
         const alertDiv = document.getElementById('no-color-picked-alert');
