@@ -1,13 +1,37 @@
+const container = document.getElementById('graph-container');
+
 const app = new PIXI.Application({
-  width: window.innerWidth,
-  height: window.innerHeight,
-  backgroundColor: 0xFFC0CB, // light pink background :)
+  width: container.clientWidth,
+  height: container.clientHeight,
+  backgroundAlpha: 0, 
   resolution: window.devicePixelRatio || 1,
   antialias: true,
 });
-document.getElementById('graph-container').appendChild(app.view);
 
-// Load graph JSON from backend
+container.appendChild(app.view);
+
+window.addEventListener('resize', () => {
+  app.renderer.resize(container.clientWidth, container.clientHeight);
+});
+
+const colorMap = {
+  pastel_blue: 0x92ceff, 
+  pastel_red: 0xfc959f,  
+  pastel_green: 0x8ecfa4, 
+};
+
+
+let selectedColor = null;
+
+const swatches = document.querySelectorAll('.color-swatch');
+swatches.forEach(swatch => {
+  swatch.addEventListener('click', () => {
+    swatches.forEach(s => s.classList.remove('selected'));
+    swatch.classList.add('selected');
+    selectedColor = swatch.getAttribute('data-color');
+  });
+});
+
 fetch('/api/graph')
   .then(res => res.json())
   .then(graph => {
@@ -18,14 +42,14 @@ fetch('/api/graph')
   });
 
 function drawGraph(graph) {
-  const scale = 50; 
-  const offsetX = app.renderer.width / 2.1;
+  const scale = 30;
+  const offsetX = app.renderer.width / 2;
   const offsetY = app.renderer.height / 2;
 
   for (const node of graph.vertices) {
     node.x = node.x * scale + offsetX;
-    node.y = -node.y * scale + offsetY; 
-    node.label = node.id.toString();  
+    node.y = -node.y * scale + offsetY;
+    node.label = node.id.toString();
   }
 
   for (const edge of graph.edges) {
@@ -47,13 +71,30 @@ function drawGraph(graph) {
     nodeContainer.y = node.y;
 
     const circle = new PIXI.Graphics();
-    circle.beginFill(0xFFFFFF);  // 
-    circle.drawCircle(0, 0, 15); 
+    circle.beginFill(0xFFFFFF);
+    circle.drawCircle(0, 0, 15);
     circle.endFill();
     nodeContainer.addChild(circle);
 
+    circle.interactive = true;
+    circle.buttonMode = true;
+    circle.on('pointerdown', () => {
+      if (!selectedColor) {
+        const alertDiv = document.getElementById('no-color-picked-alert');
+        alertDiv.style.display = 'block';
+        setTimeout(() => {
+          alertDiv.style.display = 'none';
+        }, 3000); 
+        return;
+      }
+      circle.clear();
+      circle.beginFill(colorMap[selectedColor] || 0xFFFFFF);
+      circle.drawCircle(0, 0, 15);
+      circle.endFill();
+    });
+
     const style = new PIXI.TextStyle({
-      fill: "#000000",  
+      fill: "#000000",
       fontSize: 14,
       fontWeight: "bold",
       align: "center"
@@ -67,4 +108,3 @@ function drawGraph(graph) {
     app.stage.addChild(nodeContainer);
   }
 }
-
