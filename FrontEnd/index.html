@@ -51,13 +51,28 @@
 
 
 .color-swatch {
+  position: relative;
   width: 40px;
   height: 40px;
   border-radius: 50%;
   cursor: pointer;
   border: 1px solid black;
   transition: border-color 0.3s ease;
-  box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.swatch-number {
+  position: absolute;
+  color: #222;
+  font-size: 18px;
+  font-weight: bold;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
 }
 
  .color-swatch:hover {
@@ -98,11 +113,11 @@
   <div id="no-color-picked-alert" style="display:none; position:fixed; top:100px; left:50%; transform:translateX(-50%); background:#ead4ff; color:black; padding:16px 32px; border-radius:8px; z-index:1000; font-weight:normal;">
   Please select a color first!
   </div>
-  <div class="sidebar">
-    <div class="color-swatch bg-primary" data-color="pastel_blue" title="Blue"></div>
-    <div class="color-swatch bg-danger" data-color="pastel_red" title="Red"></div>
-    <div class="color-swatch bg-success" data-color="pastel_green" title="Green"></div>
-  </div>
+ <div class="sidebar">
+  <div class="color-swatch bg-primary" data-color="pastel_blue" title="Blue"><span class="swatch-number">1</span></div>
+  <div class="color-swatch bg-danger" data-color="pastel_red" title="Red"><span class="swatch-number">2</span></div>
+  <div class="color-swatch bg-success" data-color="pastel_green" title="Green"><span class="swatch-number">3</span></div>
+</div>
 
   <div id="graph-container"></div>
 
