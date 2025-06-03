@@ -52,17 +52,17 @@ swatches.forEach(swatch => {
   });
 });
 
-let firstFourColors = [];
+let firstColors = [];
 
 fetch('/api/colors')
   .then(res => res.json())
   .then(data => {
-    firstFourColors = data.first_four_colors || [];
+    firstColors = data.first_four_colors || [];
     return fetch('/api/graph');
   })
   .then(res => res.json())
   .then(graph => {
-    drawGraph(graph, firstFourColors);
+    drawGraph(graph, firstColors);
   })
   .catch(err => {
     console.error('Error loading graph or colors:', err);
@@ -71,13 +71,12 @@ fetch('/api/colors')
 
 let allNodes = [];
 
-function drawGraph(graph, firstFourColors = []) {
+function drawGraph(graph, firstColors = []) {
   allNodes = []; 
   const scale = 30;
   const offsetX = app.renderer.width / 2;
   const offsetY = app.renderer.height / 2;
 
-  // Prepare color keys (excluding white)
   const colorKeys = Object.keys(colorMap).filter(k => k !== "white");
 
   for (const node of graph.vertices) {
@@ -109,11 +108,12 @@ function drawGraph(graph, firstFourColors = []) {
     const circle = new PIXI.Graphics();
     circle.lineStyle(1, 0x000000);
 
-    // --- Automatically color the first 4 nodes ---
-    if (node.id < 4 && firstFourColors[node.id] !== undefined && colorKeys[firstFourColors[node.id]]) {
-      const colorKey = colorKeys[firstFourColors[node.id]];
+    let isLocked = false;
+    if (node.id < 5 && colorKeys[firstColors[node.id]]) {
+      const colorKey = colorKeys[firstColors[node.id]];
       node.colorLabel = colorMap[colorKey];
       node.selected = true;
+      isLocked = true;
     }
 
     circle.beginFill(node.colorLabel);
@@ -131,6 +131,8 @@ function drawGraph(graph, firstFourColors = []) {
       circle.drawCircle(0, 0, 15);
       circle.endFill();
     }
+
+    circle.interactive = !isLocked;
 
     let originalColor = node.colorLabel;
 
@@ -158,51 +160,52 @@ function drawGraph(graph, firstFourColors = []) {
       }
     });
 
-    circle.on('pointerdown', () => {
-      if (!selectedColor) {
-        const alertDiv = document.getElementById('no-color-picked-alert');
-        alertDiv.style.display = 'block';
-        setTimeout(() => {
-          alertDiv.style.display = 'none';
-        }, 3000);
-        return;
-      }
-      const neighbors = getNeighbors(node, graph);
-      for (const n of neighbors) {
-        if (n.colorLabel === colorMap[selectedColor] && n.selected && colorMap[selectedColor] !== colorMap.white) {
-          const alertColor = document.getElementById('adjacent-nodes-alert');
-          alertColor.style.display = 'block';
+    if (!isLocked) {
+      circle.on('pointerdown', () => {
+        if (!selectedColor) {
+          const alertDiv = document.getElementById('no-color-picked-alert');
+          alertDiv.style.display = 'block';
           setTimeout(() => {
-            alertColor.style.display = 'none';
+            alertDiv.style.display = 'none';
           }, 3000);
           return;
         }
-      }
-      node.selected = true;
-      node.colorLabel = colorMap[selectedColor]; 
-      setCircleColor(node.colorLabel); 
+        const neighbors = getNeighbors(node, graph);
+        for (const n of neighbors) {
+          if (n.colorLabel === colorMap[selectedColor] && n.selected && colorMap[selectedColor] !== colorMap.white) {
+            const alertColor = document.getElementById('adjacent-nodes-alert');
+            alertColor.style.display = 'block';
+            setTimeout(() => {
+              alertColor.style.display = 'none';
+            }, 3000);
+            return;
+          }
+        }
+        node.selected = true;
+        node.colorLabel = colorMap[selectedColor]; 
+        setCircleColor(node.colorLabel); 
 
-      nodeContainer.children
-        .filter(child => child instanceof PIXI.Text)
-        .forEach(child => nodeContainer.removeChild(child));
+        nodeContainer.children
+          .filter(child => child instanceof PIXI.Text)
+          .forEach(child => nodeContainer.removeChild(child));
 
-      const style = new PIXI.TextStyle({
-        fill: "#000000",
-        fontSize: 14,
-        fontWeight: "bold",
-        align: "center"
-      });
+        const style = new PIXI.TextStyle({
+          fill: "#000000",
+          fontSize: 14,
+          fontWeight: "bold",
+          align: "center"
+        });
 
-      nodeLabel = new PIXI.Text(numberMap[selectedColor], style);
-      nodeLabel.anchor.set(0.5);
-      nodeLabel.x = 0;
-      nodeLabel.y = 0;
-      nodeContainer.addChild(nodeLabel);
+        nodeLabel = new PIXI.Text(numberMap[selectedColor], style);
+        nodeLabel.anchor.set(0.5);
+        nodeLabel.x = 0;
+        nodeLabel.y = 0;
+        nodeContainer.addChild(nodeLabel);
     });
+  }
 
-    // --- Add label if node is pre-colored ---
-    if (node.selected && node.id < 4 && firstFourColors[node.id] !== undefined && colorKeys[firstFourColors[node.id]]) {
-      const colorKey = colorKeys[firstFourColors[node.id]];
+    if (node.selected && node.id < 5 && colorKeys[firstColors[node.id]]) {
+      const colorKey = colorKeys[firstColors[node.id]];
       const style = new PIXI.TextStyle({
         fill: "#000000",
         fontSize: 14,
@@ -229,21 +232,23 @@ function drawGraph(graph, firstFourColors = []) {
 }
 
 function whiteGraph() {
-    selectedColor = null;
-    const swatches = document.querySelectorAll('.color-swatch');
-    swatches.forEach(swatch => swatch.classList.remove('selected'));
-    allNodes.forEach(({ node, nodeContainer, setCircleColor, getLabel, setLabel }) => {
-      node.selected = false;
-      node.colorLabel = colorMap.white;
-      setCircleColor(colorMap.white);
+  selectedColor = null;
+  const swatches = document.querySelectorAll('.color-swatch');
+  swatches.forEach(swatch => swatch.classList.remove('selected'));
+  allNodes.forEach(({ node, nodeContainer, setCircleColor, getLabel, setLabel }) => {
+    if (node.id < 5) 
+      return;
+    node.selected = false;
+    node.colorLabel = colorMap.white;
+    setCircleColor(colorMap.white);
 
-      const label = getLabel();
-      if (label && nodeContainer.children.includes(label)) {
-        nodeContainer.removeChild(label);
-        setLabel(null);
-      }
-    });
-  }
+    const label = getLabel();
+    if (label && nodeContainer.children.includes(label)) {
+      nodeContainer.removeChild(label);
+      setLabel(null);
+    }
+  });
+}
 
 document.getElementById('start-over-btn').addEventListener('click', () => {
   document.getElementById('adjacent-nodes-alert').style.display = 'none';
