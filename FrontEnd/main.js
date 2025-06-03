@@ -52,27 +52,37 @@ swatches.forEach(swatch => {
   });
 });
 
-fetch('/api/graph')
+let firstFourColors = [];
+
+fetch('/api/colors')
+  .then(res => res.json())
+  .then(data => {
+    firstFourColors = data.first_four_colors || [];
+    return fetch('/api/graph');
+  })
   .then(res => res.json())
   .then(graph => {
-    drawGraph(graph);
+    drawGraph(graph, firstFourColors);
   })
   .catch(err => {
-    console.error('Error loading graph:', err);
+    console.error('Error loading graph or colors:', err);
   });
+
 
 let allNodes = [];
 
-function drawGraph(graph) {
+function drawGraph(graph, firstFourColors = []) {
   allNodes = []; 
   const scale = 30;
   const offsetX = app.renderer.width / 2;
   const offsetY = app.renderer.height / 2;
 
+  // Prepare color keys (excluding white)
+  const colorKeys = Object.keys(colorMap).filter(k => k !== "white");
+
   for (const node of graph.vertices) {
     node.x = node.x * scale + offsetX;
     node.y = -node.y * scale + offsetY;
-    // node.label = node.id.toString();
   }
 
   for (const edge of graph.edges) {
@@ -98,6 +108,14 @@ function drawGraph(graph) {
 
     const circle = new PIXI.Graphics();
     circle.lineStyle(1, 0x000000);
+
+    // --- Automatically color the first 4 nodes ---
+    if (node.id < 4 && firstFourColors[node.id] !== undefined && colorKeys[firstFourColors[node.id]]) {
+      const colorKey = colorKeys[firstFourColors[node.id]];
+      node.colorLabel = colorMap[colorKey];
+      node.selected = true;
+    }
+
     circle.beginFill(node.colorLabel);
     circle.drawCircle(0, 0, 15);
     circle.endFill();
@@ -151,7 +169,7 @@ function drawGraph(graph) {
       }
       const neighbors = getNeighbors(node, graph);
       for (const n of neighbors) {
-        if (n.colorLabel === colorMap[selectedColor] && n.selected &&colorMap[selectedColor] !== colorMap.white) {
+        if (n.colorLabel === colorMap[selectedColor] && n.selected && colorMap[selectedColor] !== colorMap.white) {
           const alertColor = document.getElementById('adjacent-nodes-alert');
           alertColor.style.display = 'block';
           setTimeout(() => {
@@ -182,6 +200,22 @@ function drawGraph(graph) {
       nodeContainer.addChild(nodeLabel);
     });
 
+    // --- Add label if node is pre-colored ---
+    if (node.selected && node.id < 4 && firstFourColors[node.id] !== undefined && colorKeys[firstFourColors[node.id]]) {
+      const colorKey = colorKeys[firstFourColors[node.id]];
+      const style = new PIXI.TextStyle({
+        fill: "#000000",
+        fontSize: 14,
+        fontWeight: "bold",
+        align: "center"
+      });
+      nodeLabel = new PIXI.Text(numberMap[colorKey], style);
+      nodeLabel.anchor.set(0.5);
+      nodeLabel.x = 0;
+      nodeLabel.y = 0;
+      nodeContainer.addChild(nodeLabel);
+    }
+
     app.stage.addChild(nodeContainer);
     allNodes.push({
       node,
@@ -192,7 +226,6 @@ function drawGraph(graph) {
       setLabel: (lbl) => { nodeLabel = lbl; }
     });
   }
-  
 }
 
 function whiteGraph() {
