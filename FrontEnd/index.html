@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" >
 <head>
-    <!-- add icon link -->
     <link rel="icon" href="https://upload.wikimedia.org/wikipedia/commons/thumb/9/90/Petersen_graph_3-coloring.svg/800px-Petersen_graph_3-coloring.svg.png"
         type="image/x-icon" />
 
@@ -12,284 +11,547 @@
     href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
     rel="stylesheet"
   />
+  <link href="https://fonts.googleapis.com/css2?family=Luckiest+Guy&display=swap" rel="stylesheet">
   <style>
     html, body {
-  height: 100%;
-  margin: 0;
-  overflow: hidden;
-  background-color: #f8f1d3;
-}
-
-.fancy-title {
-  font-size: 4rem;
-  font-weight: bold;
-  color: #f8f1d3;
-  text-shadow: 2px 2px 8px #fc959f, 0 0 20px #fc959f;
-  margin-bottom: 40px;
-  text-align: center;
-}
-
-.sidebar {
-  position: fixed;
-  top: 56px;
-  left: 0;
-  height: 100%;
-  width: 80px;
-  background-color: #ead4ff;
-  border: 1px solid #000000;  
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-start ;
-  gap: 20px;
-  padding-top: 230px;
-  box-shadow: 2px 0 5px rgba(0,0,0,0.1);
-  z-index: 10;
-}
-
-.bg-primary {
-  background-color: #92ceff !important; 
-}
-  
-.bg-danger {
-  background-color: #fc959f !important; 
-}
-  
-.bg-success {
-  background-color: #8ecfa4 !important; 
-}
-
-.bg-default {
-  background-color: #ffffff !important; 
-}
-
-.bg-bar {
-  background-color: #A6D6D6 !important;
-}
-
-.no-button {
-  background-color: #e26262 !important;
-}
-
-.yes-button {
-  background-color: #9be29b !important;
-}
-
-.start {
-  background-color: #f8f1d3 !important;
-}
-
-.color-swatch {
-  position: relative;
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  cursor: pointer;
-  border: 1px solid black;
-  transition: border-color 0.3s ease;
-  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.swatch-number {
-  position: absolute;
-  color: #222;
-  font-size: 18px;
-  font-weight: bold;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-  pointer-events: none;
-}
-
- .color-swatch:hover {
-      transform: scale(1.1);
+      height: 100%;
+      margin: 0;
+      overflow: hidden;
+      background-color: #f8f1d3;
     }
 
-#graph-container {
-  position: absolute;
-  left: 400px;
-  top: 120px;
-  right: 400px;
-  bottom: 70px;
-  overflow: hidden;
-  border: 1px solid #000000;  
-  background-color: #F7CFD8; 
-  border-radius: 10px;
-  box-shadow: 2px 0 5px rgba(0,0,0,0.1);
-}
+    .sidebar {
+      position: fixed;
+      top: 56px;
+      left: 0;
+      height: 100%;
+      width: 80px;
+      background-color: #ead4ff;
+      border: 1px solid #000000;  
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start ;
+      gap: 20px;
+      padding-top: 230px;
+      box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+      z-index: 10;
+    }
 
-#start-btn {
-  width: 100px;
-  height: 100px;
-  border-radius: 50%;
-  border: 2px solid #fc959f;
-  background: #f8f1d3;
-  font-size: 1.5rem;
-  font-weight: bold;
-  color: #fc959f;
-  box-shadow: 0 4px 15px rgba(252, 149, 159, 0.3);
-  text-shadow: 2px 2px 8px #fc959f, 0 0 10px #f8f1d3;
-  margin-right: 50px;
-  transition: transform 0.15s, box-shadow 0.15s;
-}
+    pink-color{
+      color: #F7CFD8 !important;
+    }
+    .bg-primary {
+      background-color: #92ceff !important; 
+    }
+    .bg-danger {
+      background-color: #fc959f !important; 
+    }
+    .bg-success {
+      background-color: #8ecfa4 !important; 
+    }
+    .bg-default {
+      background-color: #ffffff !important; 
+    }
+    .bg-bar {
+      background-color: #A6D6D6 !important;
+    }
+    .no-button {
+      background-color: #e26262 !important;
+    }
+    .yes-button {
+      background-color: #9be29b !important;
+    }
+    .start {
+      background-color: #faf0db !important;
+    }
+    .color-swatch {
+      position: relative;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      cursor: pointer;
+      border: 1px solid black;
+      transition: border-color 0.3s ease;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .swatch-number {
+      position: absolute;
+      color: #222;
+      font-size: 18px;
+      font-weight: bold;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      pointer-events: none;
+    }
+    .color-swatch:hover {
+      transform: scale(1.1);
+    }
+  
+    #graph-container {
+      position: absolute;
+      left: 380px;
+      top: 120px;
+      right: 480px;
+      bottom: 70px;
+      overflow: hidden;
+      border: 1px solid #000000;  
+      background-color: #ffffff; 
+      border-radius: 10px;
+      box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+      z-index: 5;
+  }
+    #lines {
+      position: absolute;
+      top: 140px;
+      width: 20px;
+      min-width: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      background: transparent;
+      z-index: 10;
+      margin-left: 648px;
+      pointer-events: none;
+    }
 
-#start-btn:hover {
-  transform: scale(1.08);
-  box-shadow: 0 8px 24px rgba(252, 149, 159, 0.5);
-  background: #fcf5e7;
-}
+    .line {
+      width: 555px;
+      height: 2px;
+      background: #999999;
+      margin-bottom: 23px;
+      opacity: 0.3;
+    } 
 
-#start-over-btn {
-  transition: transform 0.1s ease;
-}
+    #linesV {
+      position: absolute;
+      top: 121px;
+      left: 380px;
+      height: 506px; 
+      width: 555px; 
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      pointer-events: none; 
+      z-index: 20; 
+    }
 
-#start-over-btn:hover {
-  transform: scale(1.05);
-}
+    .lineV {
+      width: 2px;
+      height: 555px;
+      background: #999999;
+      margin-left: 23px;
+      opacity: 0.3;
+    } 
 
-#confirm-reset-btn {
-  transition: transform 0.1s ease;
-}
+    #spirals {
+      position: absolute;
+      top: 140px;
+      width: 20px;
+      min-width: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      background: transparent;
+      z-index: 2000;
+      margin-left: 368px;
+    }
 
-#confirm-reset-btn:hover {
-  transform: scale(1.02);
-}
+    .spiral {
+      width: 66px;
+      height: 10px;
+      background: #7a7a7a;
+      border: none;
+      border-radius: 50% 50% 0 0;
+      margin-bottom: 32px;
+      transform: rotate(-4deg);
+    } 
 
-#cancel-reset-btn {
-  transition: transform 0.1s ease;
-}
+    #backSpirals {
+      position: absolute;
+      top: 150px;
+      width: 15px;
+      min-width: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      background: transparent;
+      z-index: 1;
+      margin-left: 355px;
+    }
 
-#cancel-reset-btn:hover {
-  transform: scale(1.02);
-}
+    .backSpiral {
+      width: 42px;
+      height: 10px;
+      background: #494949;
+      border: none;
+      border-radius: 0 0 50% 50%;
+      margin-bottom: 32px;
+      box-shadow: none;
+      transform: rotate(+15deg);
+    } 
+    
+    #spiralsDots {
+      position: absolute;
+      top: 137px;
+      width: 20px;
+      min-width: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      background: transparent;
+      z-index: 1500;
+      margin-left: 400px;
+    }
 
+    .spiralDot {
+      width: 18px;
+      height: 18px;
+      background: #444444;
+      border: none;
+      border-radius: 50%;
+      margin-bottom: 24px;
+    } 
+
+    #start-btn {
+      width: 160px;
+      height: 70px;
+      border-radius: 40px;
+      border: 4px solid #92ceff;
+      background: #ffffff;
+      font-family: 'Luckiest Guy', cursive;
+      font-size: 2.1rem;
+      font-weight: bold;
+      color: #92ceff;
+      letter-spacing: 2px;
+      box-shadow: 0 3px 12px #879aaa55;
+      margin-top: 10px;
+      margin-bottom: 0;
+      transition: transform 0.2s, box-shadow 0.15s, color 0.15s, border-color 0.15s;
+      text-shadow:
+        -2px -2px 0 #fff,
+        2px -2px 0 #fff,
+        -2px  2px 0 #fff,
+        2px  2px 0 #fff,
+        0px  2px 0 #fff,
+        2px  0px 0 #fff,
+        -2px  0px 0 #fff,
+        0px -2px 0 #fff;
+      text-align: center;
+      display: flex;
+      align-items: flex-end;
+      justify-content: center;
+      padding-bottom: 0px;
+    }
+
+    #start-btn:hover {
+      transform: scale(1.05);
+    }
+
+    #start-over-btn {
+      transition: transform 0.1s ease;
+    }
+    #start-over-btn:hover {
+      transform: scale(1.05);
+    }
+    #confirm-reset-btn {
+      transition: transform 0.1s ease;
+    }
+    #confirm-reset-btn:hover {
+      transform: scale(1.02);
+    }
+    #cancel-reset-btn {
+      transition: transform 0.1s ease;
+    }
+    #cancel-reset-btn:hover {
+      transform: scale(1.02);
+    }
   </style>
 </head>
 <body>
   <div id="start-page" style="
-  position:fixed;
-  top:0; left:0; right:0; bottom:0;
-  width:100vw; height:100vh;
-  background: #ffd4e9;
-  z-index:2000;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: 3rem;">
-  <div class="fancy-title" style="margin-bottom: 40px;">Graph Coloring Game</div>
-   <button id="start-btn" class="btn start">
-    Start
-  </button>
-</div>
+    position:fixed;
+    top:0; left:0; right:0; bottom:0;
+    width:100vw; height:100vh;
+    background: #ffd4e9;
+    z-index:10000;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: 3rem;">
+    <div id="pixi-title" style="width:800px; height:160px; margin-bottom:40px; background:#ffd4e9;"></div>
+    <button id="start-btn" class="btn pink-color">Start</button>
+  </div>
+ <div id="graph-container"></div>
+    <div id="lines">
+        <div class="line"></div>
+        <div class="line"></div>
+        <div class="line"></div>
+        <div class="line"></div>
+        <div class="line"></div>
+        <div class="line"></div>
+        <div class="line"></div>
+        <div class="line"></div>
+        <div class="line"></div>
+        <div class="line"></div>
+        <div class="line"></div>
+        <div class="line"></div>
+        <div class="line"></div>
+         <div class="line"></div>
+        <div class="line"></div>
+        <div class="line"></div>
+        <div class="line"></div>
+        <div class="line"></div>
+        <div class="line"></div>
+        <div class="line"></div>
+        <div class="line"></div>
+        <div class="line"></div>
+      </div>
+    <div id="linesV">
+        <div class="lineV"></div>
+        <div class="lineV"></div>
+        <div class="lineV"></div>
+        <div class="lineV"></div>
+        <div class="lineV"></div>
+        <div class="lineV"></div>
+        <div class="lineV"></div>
+        <div class="lineV"></div>
+        <div class="lineV"></div>
+        <div class="lineV"></div>
+        <div class="lineV"></div>
+        <div class="lineV"></div>
+        <div class="lineV"></div>
+        <div class="lineV"></div>
+        <div class="lineV"></div>
+        <div class="lineV"></div>
+        <div class="lineV"></div>
+        <div class="lineV"></div>
+        <div class="lineV"></div>
+        <div class="lineV"></div>
+        <div class="lineV"></div>
+      </div>
+    <div id="backSpirals">
+        <div class="backSpiral"></div>
+        <div class="backSpiral"></div>
+        <div class="backSpiral"></div>
+        <div class="backSpiral"></div>
+        <div class="backSpiral"></div>
+        <div class="backSpiral"></div>
+        <div class="backSpiral"></div>
+        <div class="backSpiral"></div>
+        <div class="backSpiral"></div>
+        <div class="backSpiral"></div>
+        <div class="backSpiral"></div>
+        <div class="backSpiral"></div>
+        <div class="backSpiral"></div>
+      </div>
+    <div id="spiralsDots">
+        <div class="spiralDot"></div>
+        <div class="spiralDot"></div>
+        <div class="spiralDot"></div>
+        <div class="spiralDot"></div>
+        <div class="spiralDot"></div>
+        <div class="spiralDot"></div>
+        <div class="spiralDot"></div>
+        <div class="spiralDot"></div>
+        <div class="spiralDot"></div>
+        <div class="spiralDot"></div>
+        <div class="spiralDot"></div>
+        <div class="spiralDot"></div>
+        <div class="spiralDot"></div>
+      </div>
+    <div id="spirals">
+      <div class="spiral"></div>
+      <div class="spiral"></div>
+      <div class="spiral"></div>
+      <div class="spiral"></div>
+      <div class="spiral"></div>
+      <div class="spiral"></div>
+      <div class="spiral"></div>
+      <div class="spiral"></div>
+      <div class="spiral"></div>
+      <div class="spiral"></div>
+      <div class="spiral"></div>
+      <div class="spiral"></div>
+      <div class="spiral"></div>
+    </div>
   <div id="no-color-picked-alert" style="
-  display:none; 
-  position:fixed; 
-  top:100px; 
-  left:50%; 
-  transform:translateX(-50%); 
-  background:#ead4ff; 
-  border: 1px solid #000000;  
-  color:black; 
-  padding:16px 32px; 
-  border-radius:8px; 
-  z-index:1000; 
-  font-weight:normal;">
-  Please select a color first!
+    display:none; 
+    position:fixed; 
+    top:100px; 
+    left:50%; 
+    transform:translateX(-50%); 
+    background:#ead4ff; 
+    border: 1px solid #000000;  
+    color:black; 
+    padding:16px 32px; 
+    border-radius:8px; 
+    z-index:1000; 
+    font-weight:normal;">
+    Please select a color first!
   </div>
-<div id="modal-backdrop" style="
-  display: none;
-  position: fixed;
-  top: 0; left: 0; right: 0; bottom: 0;
-  width: 100vw; height: 100vh;
-  background: rgba(0,0,0,0.15);
-  z-index: 999;
-">
-</div>
-<div id="start-over" style="
- display:none; 
- position:fixed; 
- top:100px; 
- left:50%; 
- transform:translateX(-50%); 
- background:#ead4ff; 
- border: 1px solid #000000;  
- color:black; 
- padding: 30px 30px; 
- border-radius:8px; 
- z-index:2000; 
- font-weight:normal; 
- text-align:center;">
-  <div style="margin-bottom: 20px;">
-    <div>Are you sure you want to start over?</div>
-    <div>This will reset your graph.</div>
+  <div id="modal-backdrop" style="
+    display: none;
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    width: 100vw; height: 100vh;
+    background: rgba(110, 69, 83, 0.15);
+    z-index: 999;">
   </div>
-  <button id="confirm-reset-btn" class="btn yes-button"
-    style="width:50px; height:50px; border-radius:50%; margin-right: 50px; border: 1px solid #000000;">
-    Yes
-  </button>
-  <button id="cancel-reset-btn" class="btn no-button"
-    style="width:50px; height:50px; border-radius:50%; border: 1px solid #000000;">
-    No
-  </button>
-</div>
-<div id="adjacent-nodes-alert" style="
-  display:none; 
-  position:fixed; 
-  top:100px; 
-  left:50%; 
-  transform:translateX(-50%); 
-  background:#ead4ff; 
-  border: 1px solid #000000;  
-  color:black; 
-  padding:16px 32px; 
-  border-radius:8px; 
-  z-index:1000; 
-  font-weight:normal;">
-  Two adjacent vertices cannot have the same color!
+  <div id="level-completed-alert" style="
+    display:none; 
+    position:fixed; 
+    top:340px; 
+    left:50%; 
+    transform:translateX(-50%); 
+    background:#ead4ff; 
+    border: 1px solid #000000;  
+    color:black; 
+    padding:16px 32px; 
+    border-radius:8px; 
+    z-index:1000; 
+    font-weight:normal;
+    text-align: center;">
+    Level completed!<br>
+    Click "Next level" to continue.
   </div>
- <div class="sidebar">
-  <div class="color-swatch bg-default" data-color="white" title="White"><span class="swatch-number"> </span></div>
-  <div class="color-swatch bg-primary" data-color="pastel_blue" title="Blue"><span class="swatch-number">1</span></div>
-  <div class="color-swatch bg-danger" data-color="pastel_red" title="Red"><span class="swatch-number">2</span></div>
-  <div class="color-swatch bg-success" data-color="pastel_green" title="Green"><span class="swatch-number">3</span></div>
-</div>
-<nav class="navbar navbar-expand-sm bg-bar navbar-dark" style="box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); border: 1px solid #000000;">
-  <div class="container-fluid p-0 m-0">
-    <ul class="navbar-nav" style="margin-left: 10px; padding-left: 0;">
-      <li class="nav-item">
-        <a class="nav-link active" href="#" style="color: black;">Tutorial</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link active" href="#" style="color: black;">Link to something</a>
-      </li>
-      <li class="nav-item">
-        <a class="nav-link active" href="#" style="color: black;">Another link to something</a>
-      </li>
-    </ul>
+  <div id="start-over" style="
+    display:none; 
+    position:fixed; 
+    top:100px; 
+    left:50%; 
+    transform:translateX(-50%); 
+    background:#ead4ff; 
+    border: 1px solid #000000;  
+    color:black; 
+    padding: 30px 30px; 
+    border-radius:8px; 
+    z-index:2000; 
+    font-weight:normal; 
+    text-align:center;">
+    <div style="margin-bottom: 20px;">
+      <div>Are you sure you want to start over?</div>
+      <div>This will reset your graph.</div>
+    </div>
+    <button id="confirm-reset-btn" class="btn yes-button"
+      style="width:50px; height:50px; border-radius:50%; margin-right: 50px; border: 1px solid #000000;">
+      Yes
+    </button>
+    <button id="cancel-reset-btn" class="btn no-button"
+      style="width:50px; height:50px; border-radius:50%; border: 1px solid #000000;">
+      No
+    </button>
   </div>
-</nav>
+  <div id="adjacent-nodes-alert" style="
+    display:none; 
+    position:fixed; 
+    top:100px; 
+    left:50%; 
+    transform:translateX(-50%); 
+    background:#ead4ff; 
+    border: 1px solid #000000;  
+    color:black; 
+    padding:16px 32px; 
+    border-radius:8px; 
+    z-index:1000; 
+    font-weight:normal;">
+    Two adjacent vertices cannot have the same color!
+  </div>
+  <div class="sidebar">
+    <div class="color-swatch bg-default" data-color="white" title="White"><span class="swatch-number"> </span></div>
+    <div class="color-swatch bg-primary" data-color="pastel_blue" title="Blue"><span class="swatch-number">1</span></div>
+    <div class="color-swatch bg-danger" data-color="pastel_red" title="Red"><span class="swatch-number">2</span></div>
+    <div class="color-swatch bg-success" data-color="pastel_green" title="Green"><span class="swatch-number">3</span></div>
+  </div>
+  <nav class="navbar navbar-expand-sm bg-bar navbar-dark" style="box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); border: 1px solid #000000;">
+    <div class="container-fluid p-0 m-0">
+      <ul class="navbar-nav" style="margin-left: 10px; padding-left: 0;">
+        <li class="nav-item">
+          <a class="nav-link active" href="#" style="color: black;">Tutorial</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link active" href="#" style="color: black;">Link to something</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link active" href="#" style="color: black;">Another link to something</a>
+        </li>
+      </ul>
+    </div>
+  </nav>
   <button id="start-over-btn" class="btn btn-warning"
-  style="
-    position:absolute;
-    background:#ead4ff;
-    left:1160px;
-    top:110px;
-    z-index:100;
-    border-radius:50%;
-    width:90px;
-    height:90px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.1); 
-    border: 1px solid #000000;            
-  ">
-  Start over
-</button>
-  <div id="graph-container"></div>
+    style="
+      position:absolute;
+      background:#ead4ff;
+      left:1160px;
+      top:110px;
+      z-index:100;
+      border-radius:50%;
+      width:90px;
+      height:90px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1); 
+      border: 1px solid #000000;            
+    ">
+    Start over
+  </button>
+  <button id="next-level" class="btn btn-warning"
+    style="
+      position:absolute;
+      background:#ead4ff;
+      left:1160px;
+      top:590px;
+      z-index:100;
+      border-radius:50%;
+      width:90px;
+      height:90px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1); 
+      border: 1px solid #000000;            
+    ">
+    Next level
+  </button>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/7.2.4/pixi.min.js"></script>
   <script src="/static/main.js"></script>
+  <script>
+    window.addEventListener('DOMContentLoaded', () => {
+      const titleContainer = document.getElementById('pixi-title');
+      const app = new PIXI.Application({
+        width: 800,
+        height: 160,
+        backgroundColor: 0xffd4e9,
+        antialias: true,
+        resolution: window.devicePixelRatio || 1,
+      });
+      titleContainer.appendChild(app.view);
+
+      const style = new PIXI.TextStyle({
+        fontFamily: '"Luckiest Guy", cursive',
+        fontSize: 52,
+        fill: ['#92ceff'],
+        stroke: '#fff',
+        strokeThickness: 8,
+        dropShadow: true,
+        dropShadowColor: '#bdcbd6',
+        dropShadowBlur: 8,
+        dropShadowAngle: Math.PI / 6,
+        dropShadowDistance: 6,
+        letterSpacing: 2,
+        align: 'center',
+      });
+
+      const titleText = new PIXI.Text('Graph Coloring Game', style);
+      titleText.anchor.set(0.5);
+      titleText.x = app.screen.width / 2;
+      titleText.y = app.screen.height / 2;
+      app.stage.addChild(titleText);
+    });
+  </script>
 </body>
 </html>
-

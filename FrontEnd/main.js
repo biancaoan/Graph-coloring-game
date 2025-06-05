@@ -18,6 +18,7 @@ document.getElementById('start-btn').addEventListener('click', function() {
   document.getElementById('start-page').style.display = 'none';
 });
 
+
 const colorMap = {
   white: 0xffffff,
   pastel_blue: 0x92ceff, 
@@ -31,6 +32,60 @@ const numberMap = {
   pastel_red: 2,  
   pastel_green: 3, 
 };
+
+function verifyGraph() {
+  coloredGraph = true;
+  allNodes.forEach(({ node, nodeContainer, setCircleColor, getLabel, setLabel }) => {
+    if (node.id < 5) 
+      return;
+    if(node.colorLabel === colorMap.white || !node.selected) {
+      coloredGraph = false;
+    }
+  });
+  return coloredGraph;
+}
+
+function animateGraph(onComplete) {
+  const amplitude = 12;
+  const duration = 600; 
+  const waveSpeed = 80;
+  const originalYs = allNodes.map(({ nodeContainer }) => nodeContainer.y);
+
+  let startTime = performance.now();
+
+  function animateWave() {
+    const elapsed = performance.now() - startTime;
+    let allDone = true;
+
+    allNodes.forEach(({ nodeContainer }, i) => {
+      const nodeDelay = i * waveSpeed;
+      let localElapsed = elapsed - nodeDelay;
+
+      if (localElapsed < 0) {
+        nodeContainer.y = originalYs[i];
+        allDone = false;
+        return;
+      }
+      if (localElapsed < duration) {
+        const progress = localElapsed / duration;
+        nodeContainer.y = originalYs[i] + Math.sin(progress * Math.PI) * amplitude;
+        allDone = false;
+      } else {
+        nodeContainer.y = originalYs[i];
+      }
+    });
+
+    if (allDone) {
+      app.ticker.remove(animateWave);
+      allNodes.forEach(({ nodeContainer }, i) => {
+        nodeContainer.y = originalYs[i];
+      });
+      if (typeof onComplete === "function") onComplete();
+    }
+  }
+
+  app.ticker.add(animateWave); 
+}
 
 function getNeighbors(node, graph) {
   const neighborIds = new Set();
@@ -201,6 +256,16 @@ function drawGraph(graph, firstColors = []) {
         nodeLabel.x = 0;
         nodeLabel.y = 0;
         nodeContainer.addChild(nodeLabel);
+
+         if (verifyGraph()) {
+          animateGraph(() => {
+            const alertDiv = document.getElementById('level-completed-alert');
+            alertDiv.style.display = 'block';
+            setTimeout(() => {
+              alertDiv.style.display = 'none';
+            }, 4500);
+          });
+        } 
     });
   }
 
@@ -229,7 +294,9 @@ function drawGraph(graph, firstColors = []) {
       setLabel: (lbl) => { nodeLabel = lbl; }
     });
   }
+ 
 }
+
 
 function whiteGraph() {
   selectedColor = null;
@@ -266,6 +333,8 @@ document.getElementById('confirm-reset-btn').addEventListener('click', () => {
 document.getElementById('cancel-reset-btn').addEventListener('click', () => {
   document.getElementById('start-over').style.display = 'none';
   document.getElementById('modal-backdrop').style.display = 'none';
+
+  
 });
 
  /* 
