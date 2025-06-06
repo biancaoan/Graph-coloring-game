@@ -18,6 +18,19 @@ document.getElementById('start-btn').addEventListener('click', function() {
   document.getElementById('start-page').style.display = 'none';
 });
 
+const urlParams = new URLSearchParams(window.location.search);
+if (!urlParams.has('level')) {
+  urlParams.set('level', '1');
+  const newUrl = `${window.location.pathname}?${urlParams.toString()}`;
+  window.history.replaceState({}, '', newUrl);
+}
+
+let level = parseInt(urlParams.get('level'), 10);
+
+let nrColors = 3; 
+
+if (level == 1) 
+  nrColors = 2;
 
 const colorMap = {
   white: 0xffffff,
@@ -36,7 +49,7 @@ const numberMap = {
 function verifyGraph() {
   coloredGraph = true;
   allNodes.forEach(({ node, nodeContainer, setCircleColor, getLabel, setLabel }) => {
-    if (node.id < 5) 
+    if (node.id < 5 && level != 1) 
       return;
     if(node.colorLabel === colorMap.white || !node.selected) {
       coloredGraph = false;
@@ -107,21 +120,33 @@ swatches.forEach(swatch => {
   });
 });
 
+
 let firstColors = [];
 
-fetch('/api/colors')
-  .then(res => res.json())
-  .then(data => {
-    firstColors = data.first_four_colors || [];
-    return fetch('/api/graph');
-  })
-  .then(res => res.json())
-  .then(graph => {
-    drawGraph(graph, firstColors);
-  })
-  .catch(err => {
-    console.error('Error loading graph or colors:', err);
-  });
+let graphRequest = () => fetch(`/api/graph?level=${level}`).then(res => res.json());
+
+if (level >= 2) {
+  fetch(`/api/colors?level=${level}`)
+    .then(res => res.json())
+    .then(data => {
+      firstColors = data.first_four_colors || [];
+      return graphRequest();
+    })
+    .then(graph => {
+      drawGraph(graph, firstColors);
+    })
+    .catch(err => {
+      console.error('Error loading graph or colors:', err);
+    });
+} else {
+  graphRequest()
+    .then(graph => {
+      drawGraph(graph, []);
+    })
+    .catch(err => {
+      console.error('Error loading graph:', err);
+    });
+}
 
 
 let allNodes = [];
@@ -164,7 +189,7 @@ function drawGraph(graph, firstColors = []) {
     circle.lineStyle(1, 0x000000);
 
     let isLocked = false;
-    if (node.id < 5 && colorKeys[firstColors[node.id]]) {
+    if (node.id < 5 && colorKeys[firstColors[node.id]] && level != 1) {
       const colorKey = colorKeys[firstColors[node.id]];
       node.colorLabel = colorMap[colorKey];
       node.selected = true;
@@ -269,7 +294,7 @@ function drawGraph(graph, firstColors = []) {
     });
   }
 
-    if (node.selected && node.id < 5 && colorKeys[firstColors[node.id]]) {
+    if (level != 1 && node.selected && node.id < 5 && colorKeys[firstColors[node.id]]) {
       const colorKey = colorKeys[firstColors[node.id]];
       const style = new PIXI.TextStyle({
         fill: "#000000",
@@ -303,7 +328,7 @@ function whiteGraph() {
   const swatches = document.querySelectorAll('.color-swatch');
   swatches.forEach(swatch => swatch.classList.remove('selected'));
   allNodes.forEach(({ node, nodeContainer, setCircleColor, getLabel, setLabel }) => {
-    if (node.id < 5) 
+    if (node.id < 5 && level > 1) 
       return;
     node.selected = false;
     node.colorLabel = colorMap.white;
