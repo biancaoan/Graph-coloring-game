@@ -16,8 +16,7 @@ async def root():
 
 @app.get("/api/graph")
 async def get_graph():
-    json_path = os.path.join(frontend_path, "graphCoord.json")
-    print("Location for graphCoord.json:", json_path)
+    json_path = os.path.join(frontend_path, "graphCoord_level2.json")
     try:
         with open(json_path, "r", encoding="utf-8") as f:
             sage_data = json.load(f)
@@ -27,7 +26,7 @@ async def get_graph():
 
 @app.get("/api/colors")
 async def get_first_four_colors():
-    json_path = os.path.join(frontend_path, "coloring.json")
+    json_path = os.path.join(frontend_path, "coloring_level2.json")
     try:
         with open(json_path, "r", encoding="utf-8") as f:
             color_dict = json.load(f)
