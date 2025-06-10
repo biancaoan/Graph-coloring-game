@@ -14,23 +14,37 @@ window.addEventListener('resize', () => {
   app.renderer.resize(container.clientWidth, container.clientHeight);
 });
 
-document.getElementById('start-btn').addEventListener('click', function() {
-  document.getElementById('start-page').style.display = 'none';
+document.addEventListener('DOMContentLoaded', () => {
+    const startPage = document.getElementById('start-page');
+    
+    if (!localStorage.getItem('visited')) {
+        startPage.style.display = 'flex'; 
+    }
 });
+
+document.getElementById('start-btn').addEventListener('click', function() {
+    localStorage.setItem('visited', 'true');
+    document.getElementById('start-page').style.display = 'none';
+});
+
 
 const urlParams = new URLSearchParams(window.location.search);
 if (!urlParams.has('level')) {
   urlParams.set('level', '1');
   const newUrl = `${window.location.pathname}?${urlParams.toString()}`;
-  window.history.replaceState({}, '', newUrl);
+  window.history.replaceState({}, '', newUrl); 
+}
+const level = parseInt(urlParams.get('level'), 10);
+
+document.getElementById("level-number").textContent = level;
+
+let nrColors = 3;
+
+if (level == 1) {
+  nrColors = 2;
 }
 
-let level = parseInt(urlParams.get('level'), 10);
-
-let nrColors = 3; 
-
-if (level == 1) 
-  nrColors = 2;
+document.getElementById("number-of-colors").textContent = nrColors;
 
 const colorMap = {
   white: 0xffffff,
@@ -108,6 +122,22 @@ function getNeighbors(node, graph) {
   }
   return graph.vertices.filter(n => neighborIds.has(n.id));
 }
+
+document.addEventListener("DOMContentLoaded", () => {
+    const levelNumberElement = document.getElementById("level-number");
+    const thirdColorElement = document.querySelector('.color-swatch.bg-success');
+
+    function updateColorVisibility() {
+        const level = parseInt(levelNumberElement.textContent, 10);
+        if (level > 1) {
+            thirdColorElement.style.display = "inline-block"; 
+        } else {
+            thirdColorElement.style.display = "none"; 
+        }
+    }
+    updateColorVisibility();
+});
+
 
 let selectedColor = null;
 
@@ -361,6 +391,15 @@ document.getElementById('cancel-reset-btn').addEventListener('click', () => {
 
   
 });
+
+document.getElementById("next-level").addEventListener("click", () => {
+  if (verifyGraph()) {
+  const nextLevel = level + 1;
+  const newUrl = `${window.location.pathname}?level=${nextLevel}`;
+  window.location.href = newUrl;
+} 
+});
+
 
  /* 
     const style = new PIXI.TextStyle({
