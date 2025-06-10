@@ -15,7 +15,7 @@ async def root():
     return FileResponse(os.path.join(frontend_path, "index.html"))
 
 @app.get("/api/graph")
-async def get_graph(level: int = Query(2)):
+async def get_graph(level: int = Query(1)):
     json_path = os.path.join(frontend_path, f"graphCoord_level{level}.json")
     try:
         with open(json_path, "r", encoding="utf-8") as f:
@@ -25,7 +25,7 @@ async def get_graph(level: int = Query(2)):
         return JSONResponse(content={"error": f"Graph data for level {level} not found"}, status_code=404)
 
 @app.get("/api/colors")
-async def get_first_four_colors(level: int = Query(2)):
+async def get_first_four_colors(level: int = Query(1)):
     json_path = os.path.join(frontend_path, f"coloring_level{level}.json")
     try:
         with open(json_path, "r", encoding="utf-8") as f:
