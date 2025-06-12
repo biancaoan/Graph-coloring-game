@@ -191,6 +191,22 @@
   </style>
 </head>
 <body>
+  <nav class="navbar navbar-expand-sm bg-bar navbar-dark" style="box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); border: 1px solid #000000;">
+    <div class="container-fluid p-0 m-0">
+      <ul class="navbar-nav" style="margin-left: 10px; padding-left: 0;">
+        <li class="nav-item">
+          <a class="nav-link active" href="#" style="color: black;">Tutorial</a>
+        </li>
+        <li class="nav-item d-flex align-items-center">
+          <span class="nav-link active" style="color: black;">Level: <span id="level-number"></span></span>
+        </li>
+
+        <li class="nav-item">
+          <a class="nav-link active" href="#" style="color: black;">Another link to something</a>
+        </li>
+      </ul>
+    </div>
+  </nav>
   <div id="start-page" style="
     display:none;
     position:fixed;
@@ -205,99 +221,98 @@
     <div id="pixi-title" style="width:800px; height:160px; margin-bottom:40px; background:#ffd4e9;"></div>
     <button id="start-btn" class="btn pink-color">Start</button>
   </div>
- <div id="graph-container"></div>
-    <div id="lines">
-        <div class="line"></div>
-        <div class="line"></div>
-        <div class="line"></div>
-        <div class="line"></div>
-        <div class="line"></div>
-        <div class="line"></div>
-        <div class="line"></div>
-        <div class="line"></div>
-        <div class="line"></div>
-        <div class="line"></div>
-        <div class="line"></div>
-        <div class="line"></div>
-        <div class="line"></div>
-         <div class="line"></div>
-        <div class="line"></div>
-        <div class="line"></div>
-        <div class="line"></div>
-        <div class="line"></div>
-        <div class="line"></div>
-        <div class="line"></div>
-        <div class="line"></div>
-        <div class="line"></div>
-      </div>
-    <div id="linesV">
-        <div class="lineV"></div>
-        <div class="lineV"></div>
-        <div class="lineV"></div>
-        <div class="lineV"></div>
-        <div class="lineV"></div>
-        <div class="lineV"></div>
-        <div class="lineV"></div>
-        <div class="lineV"></div>
-        <div class="lineV"></div>
-        <div class="lineV"></div>
-        <div class="lineV"></div>
-        <div class="lineV"></div>
-        <div class="lineV"></div>
-        <div class="lineV"></div>
-        <div class="lineV"></div>
-        <div class="lineV"></div>
-        <div class="lineV"></div>
-        <div class="lineV"></div>
-        <div class="lineV"></div>
-        <div class="lineV"></div>
-        <div class="lineV"></div>
-      </div>
-    <div id="backSpirals">
-        <div class="backSpiral"></div>
-        <div class="backSpiral"></div>
-        <div class="backSpiral"></div>
-        <div class="backSpiral"></div>
-        <div class="backSpiral"></div>
-        <div class="backSpiral"></div>
-        <div class="backSpiral"></div>
-        <div class="backSpiral"></div>
-        <div class="backSpiral"></div>
-        <div class="backSpiral"></div>
-        <div class="backSpiral"></div>
-        <div class="backSpiral"></div>
-        <div class="backSpiral"></div>
-      </div>
-    <div id="spiralsDots">
-        <div class="spiralDot"></div>
-        <div class="spiralDot"></div>
-        <div class="spiralDot"></div>
-        <div class="spiralDot"></div>
-        <div class="spiralDot"></div>
-        <div class="spiralDot"></div>
-        <div class="spiralDot"></div>
-        <div class="spiralDot"></div>
-        <div class="spiralDot"></div>
-        <div class="spiralDot"></div>
-        <div class="spiralDot"></div>
-        <div class="spiralDot"></div>
-        <div class="spiralDot"></div>
-      </div>
-    <div id="spirals">
-      <div class="spiral"></div>
-      <div class="spiral"></div>
-      <div class="spiral"></div>
-      <div class="spiral"></div>
-      <div class="spiral"></div>
-      <div class="spiral"></div>
-      <div class="spiral"></div>
-      <div class="spiral"></div>
-      <div class="spiral"></div>
-      <div class="spiral"></div>
-      <div class="spiral"></div>
-      <div class="spiral"></div>
-      <div class="spiral"></div>
-    </div>
+  <div id="notebook">
+  <div id="page-flip">
+  <div id="graph-container-2"></div>
+  <div id="graph-container-1"></div>
+  <div id="lines">
+          <div class="line"></div>
+          <div class="line"></div>
+          <div class="line"></div>
+          <div class="line"></div>
+          <div class="line"></div>
+          <div class="line"></div>
+          <div class="line"></div>
+          <div class="line"></div>
+          <div class="line"></div>
+          <div class="line"></div>
+          <div class="line"></div>
+          <div class="line"></div>
+          <div class="line"></div>
+          <div class="line"></div>
+          <div class="line"></div>
+          <div class="line"></div>
+          <div class="line"></div>
+          <div class="line"></div>
+          <div class="line"></div>
+          <div class="line"></div>
+          <div class="line"></div>
+  </div>
+  <div id="linesV">
+    <div class="lineV"></div>
+    <div class="lineV"></div>
+    <div class="lineV"></div>
+    <div class="lineV"></div>
+    <div class="lineV"></div>
+    <div class="lineV"></div>
+    <div class="lineV"></div>
+    <div class="lineV"></div>
+    <div class="lineV"></div>
+    <div class="lineV"></div>
+    <div class="lineV"></div>
+    <div class="lineV"></div>
+    <div class="lineV"></div>
+    <div class="lineV"></div>
+    <div class="lineV"></div>
+    <div class="lineV"></div>
+    <div class="lineV"></div>
+    <div class="lineV"></div>
+    <div class="lineV"></div>
+    <div class="lineV"></div>
+  </div>
+  <div id="backSpirals">
+      <div class="backSpiral"></div>
+          <div class="backSpiral"></div>
+          <div class="backSpiral"></div>
+          <div class="backSpiral"></div>
+          <div class="backSpiral"></div>
+          <div class="backSpiral"></div>
+          <div class="backSpiral"></div>
+          <div class="backSpiral"></div>
+          <div class="backSpiral"></div>
+          <div class="backSpiral"></div>
+          <div class="backSpiral"></div>
+          <div class="backSpiral"></div>
+  </div>
+  <div id="spiralsDots">
+          <div class="spiralDot"></div>
+          <div class="spiralDot"></div>
+          <div class="spiralDot"></div>
+          <div class="spiralDot"></div>
+          <div class="spiralDot"></div>
+          <div class="spiralDot"></div>
+          <div class="spiralDot"></div>
+          <div class="spiralDot"></div>
+          <div class="spiralDot"></div>
+          <div class="spiralDot"></div>
+          <div class="spiralDot"></div>
+          <div class="spiralDot"></div>
+  </div>
+  <div id="spirals">
+        <div class="spiral"></div>
+        <div class="spiral"></div>
+        <div class="spiral"></div>
+        <div class="spiral"></div>
+        <div class="spiral"></div>
+        <div class="spiral"></div>
+        <div class="spiral"></div>
+        <div class="spiral"></div>
+        <div class="spiral"></div>
+        <div class="spiral"></div>
+        <div class="spiral"></div>
+        <div class="spiral"></div>
+  </div>
+</div>
   <div id="no-color-picked-alert" style="
     display:none; 
     position:fixed; 
@@ -395,22 +410,6 @@
     <div class="color-swatch bg-danger" data-color="pastel_red" title="Red"><span class="swatch-number">2</span></div>
     <div class="color-swatch bg-success" data-color="pastel_green" title="Green"><span class="swatch-number">3</span></div>
  </div>
-  <nav class="navbar navbar-expand-sm bg-bar navbar-dark" style="box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); border: 1px solid #000000;">
-    <div class="container-fluid p-0 m-0">
-      <ul class="navbar-nav" style="margin-left: 10px; padding-left: 0;">
-        <li class="nav-item">
-          <a class="nav-link active" href="#" style="color: black;">Tutorial</a>
-        </li>
-        <li class="nav-item d-flex align-items-center">
-          <span class="nav-link active" style="color: black;">Level: <span id="level-number"></span></span>
-        </li>
-
-        <li class="nav-item">
-          <a class="nav-link active" href="#" style="color: black;">Another link to something</a>
-        </li>
-      </ul>
-    </div>
-  </nav>
   <button id="start-over-btn" class="btn btn-warning"
     style="
       position:absolute;

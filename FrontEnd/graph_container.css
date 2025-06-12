@@ -1,129 +1,164 @@
-#graph-container {
-      position: absolute;
-      left: 380px;
-      top: 120px;
-      right: 480px;
-      bottom: 70px;
-      overflow: hidden;
-      border: 1px solid #000000;  
-      background-color: #ffffff; 
-      border-radius: 10px;
-      box-shadow: 2px 0 5px rgba(0,0,0,0.1);
-      z-index: 5;
-    }
-    
-    #lines {
-      position: absolute;
-      top: 140px;
-      width: 20px;
-      min-width: 20px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: flex-start;
-      background: transparent;
-      z-index: 10;
-      margin-left: 648px;
-      pointer-events: none;
-    }
+#notebook {
+  position: relative;
+  width: 1400px;
+  height: 700px;
+  margin: 10px auto 0 auto;
+  background: transparent;
+  perspective: 1500px;
+  perspective-origin: left center;
+}
 
-    .line {
-      width: 555px;
-      height: 2px;
-      background: #999999;
-      margin-bottom: 23px;
-      opacity: 0.15;
-    } 
+#graph-container-1 {
+  position: absolute;
+  left: 530px;
+  top: 80px;
+  right: 350px;
+  bottom: 110px;
+  overflow: hidden;
+  border: 1px solid #000000;
+  background-color: #ffffff;
+  border-radius: 10px;
+  box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+  z-index: 50;
+  transform-origin: left center;
+  transform-style: preserve-3d;
+  transition: transform 1s ease;
+}
 
-    #linesV {
-      position: absolute;
-      top: 121px;
-      left: 380px;
-      height: 506px; 
-      width: 555px; 
-      display: flex;
-      flex-direction: row;
-      justify-content: space-between;
-      pointer-events: none; 
-      z-index: 20; 
-    }
+#graph-container-2 {
+  position: absolute;
+  left: 530px;
+  top: 80px;
+  right: 350px;
+  bottom: 110px;
+  overflow: hidden;
+  border: 1px solid #000000;
+  background-color: #ffffff;
+  border-radius: 10px;
+  box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+  z-index: 49;
+}
 
-    .lineV {
-      width: 2px;
-      height: 555px;
-      background: #999999;
-      margin-left: 23px;
-      opacity: 0.15;
-    } 
+#graph-container-1.flip {
+  transform: rotateY(180deg);
+}
 
-    #spirals {
-      position: absolute;
-      top: 140px;
-      width: 20px;
-      min-width: 20px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: flex-start;
-      background: transparent;
-      z-index: 2000;
-      margin-left: 368px;
-    }
 
-    .spiral {
-      width: 66px;
-      height: 10px;
-      background: #7a7a7a;
-      border: none;
-      border-radius: 50% 50% 0 0;
-      margin-bottom: 32px;
-      transform: rotate(-4deg);
-    } 
+#lines {
+  position: absolute;
+  top: 80px;
+  left: 132px;
+  width: 20px;
+  min-width: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  background: transparent;
+  z-index: 60;
+  margin-left: 648px;
+  pointer-events: none;
+}
 
-    #backSpirals {
-      position: absolute;
-      top: 150px;
-      width: 15px;
-      min-width: 20px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: flex-start;
-      background: transparent;
-      z-index: 1;
-      margin-left: 355px;
-    }
+.line {
+  width: 519px;
+  height: 2px;
+  background: #999999;
+  margin-bottom: 23px;
+  opacity: 0.15;
+}
 
-    .backSpiral {
-      width: 42px;
-      height: 10px;
-      background: #494949;
-      border: none;
-      border-radius: 0 0 50% 50%;
-      margin-bottom: 32px;
-      box-shadow: none;
-      transform: rotate(+15deg);
-    } 
-    
-    #spiralsDots {
-      position: absolute;
-      top: 137px;
-      width: 20px;
-      min-width: 20px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: flex-start;
-      background: transparent;
-      z-index: 1500;
-      margin-left: 400px;
-    }
+#linesV {
+  position: absolute;
+  top: 83px;
+  left: 525px;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  pointer-events: none;
+  z-index: 70;
+}
 
-    .spiralDot {
-      width: 18px;
-      height: 18px;
-      background: #444444;
-      border: none;
-      border-radius: 50%;
-      margin-bottom: 24px;
-    } 
+.lineV {
+  width: 2px;
+  height: 505px;
+  background: #999999;
+  margin-left: 23px;
+  opacity: 0.15;
+}
+
+#spirals {
+  position: absolute;
+  top: 100px;
+  left: 150px;
+  width: 20px;
+  min-width: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  background: transparent;
+  z-index: 2000;
+  margin-left: 368px;
+}
+
+.spiral {
+  width: 66px;
+  height: 10px;
+  background: #7a7a7a;
+  border: none;
+  border-radius: 50% 50% 0 0;
+  margin-bottom: 32px;
+  transform: rotate(-4deg);
+}
+
+
+#backSpirals {
+  position: absolute;
+  top: 110px;
+  left: 152px;
+  width: 15px;
+  min-width: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  background: transparent;
+  z-index: 1;
+  margin-left: 355px;
+}
+
+.backSpiral {
+  width: 42px;
+  height: 10px;
+  background: #494949;
+  border: none;
+  border-radius: 0 0 50% 50%;
+  margin-bottom: 32px;
+  box-shadow: none;
+  transform: rotate(+15deg);
+}
+
+#spiralsDots {
+  position: absolute;
+  top: 96px;
+  left: 150px;
+  width: 20px;
+  min-width: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  background: transparent;
+  z-index: 1500;
+  margin-left: 400px;
+}
+
+.spiralDot {
+  width: 18px;
+  height: 18px;
+  background: #444444;
+  border: none;
+  border-radius: 50%;
+  margin-bottom: 24px;
+}

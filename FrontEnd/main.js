@@ -1,4 +1,4 @@
-const container = document.getElementById('graph-container');
+const container = document.getElementById('graph-container-1');
 
 const app = new PIXI.Application({
   width: container.clientWidth,
@@ -393,14 +393,20 @@ document.getElementById('cancel-reset-btn').addEventListener('click', () => {
 });
 
 document.getElementById("next-level").addEventListener("click", () => {
-  if (verifyGraph()) {
-  const nextLevel = level + 1;
-  const newUrl = `${window.location.pathname}?level=${nextLevel}`;
-  window.location.href = newUrl;
-} 
+ // if (verifyGraph()) {
+    const graph = document.getElementById('graph-container-1');
+    graph.classList.add('flip');
+    setTimeout(() => {
+      graph.classList.remove('flip');
+      const nextLevel = level + 1;
+      const newUrl = `${window.location.pathname}?level=${nextLevel}`;
+      window.location.href = newUrl;
+    }, 1000);
+  //}
 });
 
 
+  
  /* 
     const style = new PIXI.TextStyle({
       fill: "#000000",
