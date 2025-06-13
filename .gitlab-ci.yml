@@ -1,0 +1,28 @@
+stages:
+  - build
+  - deploy
+
+# Build the static frontend
+build_frontend:
+  stage: build
+  image: node:20
+  script:
+    - cd FrontEnd
+    - npm install
+    - npm run build  # or whatever your build command is
+    - mkdir -p ../public
+    - cp -r dist/* ../public/
+  artifacts:
+    paths:
+      - public
+
+# Deploy frontend using GitLab Pages
+pages:
+  stage: deploy
+  script:
+    - echo "Deploying static site to GitLab Pages"
+  artifacts:
+    paths:
+      - public
+  only:
+    - main  # or your default branch
