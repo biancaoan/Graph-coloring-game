@@ -1,18 +1,57 @@
-const container = document.getElementById('graph-container-1');
+const urlParams = new URLSearchParams(window.location.search);
+if (!urlParams.has('level')) {
+  urlParams.set('level', '1');
+  const newUrl = `${window.location.pathname}?${urlParams.toString()}`;
+  window.history.replaceState({}, '', newUrl); 
+}
+const level = parseInt(urlParams.get('level'), 10);
 
-const app = new PIXI.Application({
-  width: container.clientWidth,
-  height: container.clientHeight,
+document.getElementById("level-number").textContent = level;
+
+const container1 = document.getElementById('graph-container-1');
+const container2 = document.getElementById('graph-container-2');
+
+const app1 = new PIXI.Application({ 
+  width: container1.clientWidth, 
+  height: container1.clientHeight, 
   backgroundAlpha: 0, 
-  resolution: window.devicePixelRatio || 1,
-  antialias: true,
+  resolution: window.devicePixelRatio || 1, 
+  antialias: true });
+const app2 = new PIXI.Application({ 
+  width: container2.clientWidth, 
+  height: container2.clientHeight, 
+  backgroundAlpha: 0, 
+  resolution: window.devicePixelRatio || 1, 
+  antialias: true 
 });
 
-container.appendChild(app.view);
+container1.appendChild(app1.view);
+container2.appendChild(app2.view);
+
+const allNodes1 = [];
+const allNodes2 = [];
+
+Promise.all([
+  fetch(`/api/graph?level=${level}`),
+  fetch(`/api/graph?level=${level + 1}`),
+  level >= 2 ? fetch(`/api/colors?level=${level}`) : Promise.resolve({ json: () => ({ first_four_colors: [] }) }),
+  fetch(`/api/colors?level=${level + 1}`)
+])
+.then(async ([res1, res2, res3, res4]) => {
+  const [graph1, graph2, colorData1, colorData2] = await Promise.all([
+    res1.json(), res2.json(), res3.json(), res4.json()
+  ]);
+  
+  drawGraph(graph1, colorData1.first_four_colors || [], app1, allNodes1, container1);
+  drawGraph(graph2, colorData2.first_four_colors || [], app2, allNodes2, container2);
+});
+
 
 window.addEventListener('resize', () => {
-  app.renderer.resize(container.clientWidth, container.clientHeight);
+  app1.renderer.resize(container1.clientWidth, container1.clientHeight);
+  app2.renderer.resize(container2.clientWidth, container2.clientHeight);
 });
+
 
 document.addEventListener('DOMContentLoaded', () => {
     const startPage = document.getElementById('start-page');
@@ -27,16 +66,6 @@ document.getElementById('start-btn').addEventListener('click', function() {
     document.getElementById('start-page').style.display = 'none';
 });
 
-
-const urlParams = new URLSearchParams(window.location.search);
-if (!urlParams.has('level')) {
-  urlParams.set('level', '1');
-  const newUrl = `${window.location.pathname}?${urlParams.toString()}`;
-  window.history.replaceState({}, '', newUrl); 
-}
-const level = parseInt(urlParams.get('level'), 10);
-
-document.getElementById("level-number").textContent = level;
 
 let nrColors = 3;
 
@@ -61,30 +90,24 @@ const numberMap = {
 };
 
 function verifyGraph() {
-  coloredGraph = true;
-  allNodes.forEach(({ node, nodeContainer, setCircleColor, getLabel, setLabel }) => {
-    if (node.id < 5 && level != 1) 
-      return;
-    if(node.colorLabel === colorMap.white || !node.selected) {
-      coloredGraph = false;
-    }
+  return allNodesList.every(({ node }) => {
+  if (node.id < 5 && level != 1) return true;
+    return node.colorLabel !== colorMap.white && node.selected;
   });
-  return coloredGraph;
 }
 
-function animateGraph(onComplete) {
+function animateGraph(appInstance, allNodesList, onComplete) {
   const amplitude = 12;
   const duration = 600; 
   const waveSpeed = 80;
-  const originalYs = allNodes.map(({ nodeContainer }) => nodeContainer.y);
-
+  const originalYs = allNodesList.map(({ nodeContainer }) => nodeContainer.y);
   let startTime = performance.now();
 
   function animateWave() {
     const elapsed = performance.now() - startTime;
     let allDone = true;
 
-    allNodes.forEach(({ nodeContainer }, i) => {
+    allNodesList.forEach(({ nodeContainer }, i) => {
       const nodeDelay = i * waveSpeed;
       let localElapsed = elapsed - nodeDelay;
 
@@ -103,16 +126,17 @@ function animateGraph(onComplete) {
     });
 
     if (allDone) {
-      app.ticker.remove(animateWave);
-      allNodes.forEach(({ nodeContainer }, i) => {
+      appInstance.ticker.remove(animateWave);
+      allNodesList.forEach(({ nodeContainer }, i) => {
         nodeContainer.y = originalYs[i];
       });
       if (typeof onComplete === "function") onComplete();
     }
   }
 
-  app.ticker.add(animateWave); 
+  appInstance.ticker.add(animateWave); 
 }
+
 
 function getNeighbors(node, graph) {
   const neighborIds = new Set();
@@ -178,15 +202,13 @@ if (level >= 2) {
     });
 }
 
+let allNodes = allNodes1; 
 
-let allNodes = [];
-
-function drawGraph(graph, firstColors = []) {
-  allNodes = []; 
+function drawGraph(graph, firstColors = [], appInstance, allNodesList, container) {
+  allNodesList.length = 0; 
   const scale = 30;
-  const offsetX = app.renderer.width / 2;
-  const offsetY = app.renderer.height / 2;
-
+  const offsetX = appInstance.renderer.width / 2;
+  const offsetY = appInstance.renderer.height / 2;
   const colorKeys = Object.keys(colorMap).filter(k => k !== "white");
 
   for (const node of graph.vertices) {
@@ -197,14 +219,13 @@ function drawGraph(graph, firstColors = []) {
   for (const edge of graph.edges) {
     const sourceNode = graph.vertices.find(n => n.id === edge.from);
     const targetNode = graph.vertices.find(n => n.id === edge.to);
-
     if (!sourceNode || !targetNode) continue;
 
     const line = new PIXI.Graphics();
     line.lineStyle(2, 0x000000, 0.6);
     line.moveTo(sourceNode.x, sourceNode.y);
     line.lineTo(targetNode.x, targetNode.y);
-    app.stage.addChild(line);
+    appInstance.stage.addChild(line);
   }
 
   for (const node of graph.vertices) {
@@ -219,7 +240,7 @@ function drawGraph(graph, firstColors = []) {
     circle.lineStyle(1, 0x000000);
 
     let isLocked = false;
-    if (node.id < 5 && colorKeys[firstColors[node.id]] && level != 1) {
+    if (node.id < 5 && colorKeys[firstColors[node.id]] && level !== 1) {
       const colorKey = colorKeys[firstColors[node.id]];
       node.colorLabel = colorMap[colorKey];
       node.selected = true;
@@ -231,7 +252,7 @@ function drawGraph(graph, firstColors = []) {
     circle.endFill();
     nodeContainer.addChild(circle);
 
-    circle.interactive = true;
+    circle.interactive = !isLocked;
     circle.hitArea = new PIXI.Circle(0, 0, 15);
 
     function setCircleColor(color) {
@@ -242,23 +263,13 @@ function drawGraph(graph, firstColors = []) {
       circle.endFill();
     }
 
-    circle.interactive = !isLocked;
-
-    let originalColor = node.colorLabel;
-
     circle.on('pointerover', () => {
       container.style.cursor = 'pointer';
       nodeContainer.scale.set(1.1);
       if (selectedColor) {
-        originalColor = node.colorLabel; 
         setCircleColor(colorMap[selectedColor]);
       }
-      nodeContainer.children
-        .filter(child => child instanceof PIXI.Text)
-        .forEach(child => {
-          nodeLabel = child; 
-          nodeContainer.removeChild(child);
-        });
+      if (nodeLabel) nodeContainer.removeChild(nodeLabel);
     });
 
     circle.on('pointerout', () => {
@@ -280,6 +291,7 @@ function drawGraph(graph, firstColors = []) {
           }, 3000);
           return;
         }
+
         const neighbors = getNeighbors(node, graph);
         for (const n of neighbors) {
           if (n.colorLabel === colorMap[selectedColor] && n.selected && colorMap[selectedColor] !== colorMap.white) {
@@ -291,13 +303,12 @@ function drawGraph(graph, firstColors = []) {
             return;
           }
         }
+
         node.selected = true;
         node.colorLabel = colorMap[selectedColor]; 
         setCircleColor(node.colorLabel); 
 
-        nodeContainer.children
-          .filter(child => child instanceof PIXI.Text)
-          .forEach(child => nodeContainer.removeChild(child));
+        if (nodeLabel) nodeContainer.removeChild(nodeLabel);
 
         const style = new PIXI.TextStyle({
           fill: "#000000",
@@ -312,19 +323,18 @@ function drawGraph(graph, firstColors = []) {
         nodeLabel.y = 0;
         nodeContainer.addChild(nodeLabel);
 
-         if (verifyGraph()) {
-          animateGraph(() => {
-            const alertDiv = document.getElementById('level-completed-alert');
-            alertDiv.style.display = 'block';
-            setTimeout(() => {
-              alertDiv.style.display = 'none';
-            }, 4500);
-          });
-        } 
+        if (verifyGraph(allNodesList)) {
+  animateGraph(appInstance, allNodesList, () => {
+    document.getElementById('level-completed-alert').style.display = 'block';
+      setTimeout(() => {
+        document.getElementById('level-completed-alert').style.display = 'none';
+      }, 4500);
     });
   }
+});
+    }
 
-    if (level != 1 && node.selected && node.id < 5 && colorKeys[firstColors[node.id]]) {
+    if (level !== 1 && node.selected && node.id < 5 && colorKeys[firstColors[node.id]]) {
       const colorKey = colorKeys[firstColors[node.id]];
       const style = new PIXI.TextStyle({
         fill: "#000000",
@@ -339,8 +349,8 @@ function drawGraph(graph, firstColors = []) {
       nodeContainer.addChild(nodeLabel);
     }
 
-    app.stage.addChild(nodeContainer);
-    allNodes.push({
+    appInstance.stage.addChild(nodeContainer);
+    allNodesList.push({
       node,
       nodeContainer,
       circle,
@@ -349,8 +359,8 @@ function drawGraph(graph, firstColors = []) {
       setLabel: (lbl) => { nodeLabel = lbl; }
     });
   }
- 
 }
+
 
 
 function whiteGraph() {
@@ -391,19 +401,68 @@ document.getElementById('cancel-reset-btn').addEventListener('click', () => {
 
   
 });
+/*
+document.getElementById("next-level").addEventListener("click", () => {
+  const graph = document.getElementById('graph-container-1');
+  graph.classList.add('flip');
+
+  setTimeout(() => {
+    graph.classList.remove('flip');
+    graph.style.zIndex = '20';  
+    graph.classList.add('continue-flip');
+
+    setTimeout(() => {
+      const userConfirmed = confirm("Ready to go to the next level?");
+      if (userConfirmed) {
+        const nextLevel = level + 1;
+        const newUrl = `${window.location.pathname}?level=${nextLevel}`;
+        window.location.href = newUrl;
+      } else {
+        graph.classList.remove('continue-flip');
+      }
+    }, 1000);  
+  }, 1000);  
+});
+
+*/
 
 document.getElementById("next-level").addEventListener("click", () => {
- // if (verifyGraph()) {
-    const graph = document.getElementById('graph-container-1');
-    graph.classList.add('flip');
+  const graph = document.getElementById('graph-container-1');
+  const lines = document.getElementById('lines');
+  const linesV = document.getElementById('linesV');
+
+  // Step 1: Trigger initial flip
+  graph.classList.add('flip');
+  lines.classList.add('flip');
+  linesV.classList.add('flip');
+
+  setTimeout(() => {
+    // Step 2: Switch to continuous flip
+    graph.classList.remove('flip');
+    lines.classList.remove('flip');
+    linesV.classList.remove('flip');
+
+    graph.classList.add('continue-flip');
+    lines.classList.add('continue-flip');
+    linesV.classList.add('continue-flip');
+
+    graph.style.zIndex = '20';
+
     setTimeout(() => {
-      graph.classList.remove('flip');
-      const nextLevel = level + 1;
-      const newUrl = `${window.location.pathname}?level=${nextLevel}`;
-      window.location.href = newUrl;
+      const userConfirmed = confirm("Ready to go to the next level?");
+      if (userConfirmed) {
+        const nextLevel = level + 1;
+        const newUrl = `${window.location.pathname}?level=${nextLevel}`;
+        window.location.href = newUrl;
+      } else {
+        graph.classList.remove('continue-flip');
+        lines.classList.remove('continue-flip');
+        linesV.classList.remove('continue-flip');
+      }
     }, 1000);
-  //}
+  }, 1000);
 });
+
 
 
   

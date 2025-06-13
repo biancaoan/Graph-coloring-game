@@ -20,9 +20,9 @@
   border-radius: 10px;
   box-shadow: 2px 0 5px rgba(0,0,0,0.1);
   z-index: 50;
+  transition: transform 1s ease;
   transform-origin: left center;
   transform-style: preserve-3d;
-  transition: transform 1s ease;
 }
 
 #graph-container-2 {
@@ -37,9 +37,32 @@
   border-radius: 10px;
   box-shadow: 2px 0 5px rgba(0,0,0,0.1);
   z-index: 49;
+  transition: transform 1s ease;
+  transform-origin: left center;
+  transform-style: preserve-3d;
+}
+
+@keyframes continueFlip {
+  0% {
+    transform: rotateY(180deg);
+    z-index: 50;
+  }
+  100% {
+    transform: rotateY(360deg);
+    z-index: 20;
+  }
 }
 
 #graph-container-1.flip {
+  transform: rotateY(180deg);
+}
+
+#graph-container-1.continue-flip {
+  animation: continueFlip 1s forwards ease;
+}
+
+
+#graph-container-2.flip {
   transform: rotateY(180deg);
 }
 
@@ -55,7 +78,7 @@
   align-items: center;
   justify-content: flex-start;
   background: transparent;
-  z-index: 60;
+  z-index: 5000;
   margin-left: 648px;
   pointer-events: none;
 }
@@ -76,7 +99,7 @@
   flex-direction: row;
   justify-content: space-between;
   pointer-events: none;
-  z-index: 70;
+  z-index: 5000;
 }
 
 .lineV {
@@ -161,4 +184,18 @@
   border: none;
   border-radius: 50%;
   margin-bottom: 24px;
+}
+
+#lines, #linesV {
+  transform-origin: left center;
+  transform-style: preserve-3d;
+  transition: transform 1s ease;
+}
+
+#lines.flip, #linesV.flip {
+  transform: rotateY(180deg);
+}
+
+#lines.continue-flip, #linesV.continue-flip {
+  animation: continueFlip 1s forwards ease;
 }
